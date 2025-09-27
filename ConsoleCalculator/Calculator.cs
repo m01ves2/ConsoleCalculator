@@ -15,7 +15,7 @@ namespace ConsoleCalculator
     /// </summary>
     internal class Calculator
     {
-        List<string> tokens;
+        private readonly List<string> tokens;
 
         public Calculator(List<string> tokens)
         {
@@ -26,34 +26,34 @@ namespace ConsoleCalculator
         /// evaluates math expression
         /// </summary>
         /// <returns>The result of expression</returns>
-        public int Evaluate()
+        public double Evaluate()
         {
-            int result = 0;
-            FirstRun();
-            result = SecondRun();
+            double result = 0;
+            ProcessMulDiv();
+            result = ProcessAddSubstr();
             return result;
         }
 
-        private void FirstRun() //Handle * and /
+        private void ProcessMulDiv() //Handle * and /
         {
             int index = 0;
 
             while (index < tokens.Count) {
                 string token = tokens[index];
-                int result = 0;
+                double result = 0;
 
                 if (token == "*" || token == "/") {
                     if (index <= 0 || index >= tokens.Count - 1) // no operands for operation
                         throw new InvalidExpressionException();
 
-                    int left = Int32.Parse(tokens[index - 1]);
-                    int right = Int32.Parse(tokens[index + 1]);
+                    double left = Double.Parse(tokens[index - 1]);
+                    double right = Double.Parse(tokens[index + 1]);
 
                     if (token == "*")
                         result = left * right;
 
                     if (token == "/") {
-                        if (right == 0)
+                        if (right == 0.0)
                             throw new DivideByZeroException();
                         result = left / right;
                     }
@@ -70,13 +70,13 @@ namespace ConsoleCalculator
             }
         }
 
-        private int SecondRun() //Handle + and -
+        private double ProcessAddSubstr() //Handle + and -
         {
-            int result = Int32.Parse(tokens[0]);
+            double result = Double.Parse(tokens[0]);
             int index = 1;
             while(index < tokens.Count) {
                 string oper = tokens[index];
-                int right = Int32.Parse(tokens[index + 1]);
+                double right = Double.Parse(tokens[index + 1]);
 
                 if (oper == "+")
                     result += right;

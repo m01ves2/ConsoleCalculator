@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Reflection.Emit;
 
 namespace ConsoleCalculator
 {
@@ -18,8 +20,36 @@ namespace ConsoleCalculator
         /// <returns>List of tokens</returns>
         public static List<string> Parse(string expression)
         {
-            string[] splittedTokens = expression.Split(new char[] { ' ' });
-            return new List<string>(splittedTokens);
+            expression = expression.Replace(" ", String.Empty);
+            List<string> tokens = new List<string>();
+
+            bool expectOperand = true;
+            string token = "";
+            for (int i = 0; i < expression.Length; i++) {
+
+
+                if (expression[i] == '-' && expectOperand) { //found '-' as sign
+                    token = "-";
+                    expectOperand = false;
+                    continue;
+                }
+
+                if (char.IsDigit(expression[i]) || (expression[i] == '.')) {
+                    token += expression[i];
+                    expectOperand = false;
+                }
+                else 
+                if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/' ){
+                    tokens.Add(token);
+                    token = "";
+
+                    tokens.Add(expression[i].ToString());
+                    expectOperand = true;
+                }
+
+            }
+            tokens.Add(token);
+            return tokens;
         }
     }
 }
