@@ -12,7 +12,7 @@ namespace ConsoleCalculator
     /// <summary>
     /// Provides string parsing for the calculator.
     /// </summary>
-    internal static class ExpressionParser
+    public static class ExpressionParser
     {
         /// <summary>
         /// Splits string to tokens

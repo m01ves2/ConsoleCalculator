@@ -15,7 +15,7 @@ namespace ConsoleCalculator
     /// <summary>
     /// Provides basic math operations for the calculator.
     /// </summary>
-    internal class Calculator
+    public class Calculator
     {
         private readonly List<string> tokens;
 

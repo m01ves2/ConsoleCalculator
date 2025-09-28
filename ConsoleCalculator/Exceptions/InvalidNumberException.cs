@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalculator.Exceptions
 {
-    internal class InvalidNumberException : CalculatorException
+    public class InvalidNumberException : CalculatorException
     {
         public InvalidNumberException(string message) : base(message) { }
     }

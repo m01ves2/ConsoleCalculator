@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalculator.Exceptions
 {
-    internal abstract class CalculatorException : Exception
+    public abstract class CalculatorException : Exception
     {
         protected CalculatorException(string message) : base(message) { 
         }

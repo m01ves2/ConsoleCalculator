@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalculator.Exceptions
 {
-    internal class InvalidTokenException : CalculatorException
+    public class InvalidTokenException : CalculatorException
     {
         public InvalidTokenException(string message) : base(message)
         {

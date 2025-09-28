@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalculator.Exceptions
 {
-    internal class DivideByZeroCalculatorException : CalculatorException
+    public class DivideByZeroCalculatorException : CalculatorException
     {
         public DivideByZeroCalculatorException(string message) : base(message)
         {

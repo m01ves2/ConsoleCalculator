@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleCalculator
 {
-    internal class HistoryManager
+    public class HistoryManager
     {
         private List<string> history;
 
