@@ -44,7 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculator.cs" />
+    <Compile Include="Exceptions\CalculatorException.cs" />
+    <Compile Include="Exceptions\DivideByZeroCalculatorException.cs" />
+    <Compile Include="Exceptions\InvalidNumberException.cs" />
+    <Compile Include="Exceptions\InvalidTokenException.cs" />
     <Compile Include="ExpressionParser.cs" />
+    <Compile Include="HistoryManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

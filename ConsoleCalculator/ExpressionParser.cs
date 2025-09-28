@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Reflection.Emit;
+using ConsoleCalculator.Exceptions;
 
 namespace ConsoleCalculator
 {
@@ -21,6 +22,7 @@ namespace ConsoleCalculator
         public static List<string> Parse(string expression)
         {
             expression = expression.Replace(" ", String.Empty);
+            expression = expression.Replace(",", ".");
             List<string> tokens = new List<string>();
 
             bool expectOperand = true;
@@ -38,17 +40,27 @@ namespace ConsoleCalculator
                     token += expression[i];
                     expectOperand = false;
                 }
-                else 
-                if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/' ){
-                    tokens.Add(token);
+                else
+                if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/') {
+                    if (!string.IsNullOrEmpty(token))
+                        tokens.Add(token);
                     token = "";
 
                     tokens.Add(expression[i].ToString());
                     expectOperand = true;
                 }
+                else
+                if (expression[i] == '(' || expression[i] == ')') {
+                    throw new InvalidTokenException("While not supported");
+                }
+                else {
+                    throw new InvalidTokenException($"Unexpected character: {expression[i]}");
+                }
 
             }
-            tokens.Add(token);
+            
+            if(!string.IsNullOrEmpty(token))
+                tokens.Add(token);
             return tokens;
         }
     }

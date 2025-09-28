@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ConsoleCalculator.Exceptions;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.ExceptionServices;
@@ -19,7 +21,7 @@ namespace ConsoleCalculator
 
         public Calculator(List<string> tokens)
         {
-            this.tokens = tokens; // ["2", "+", "3", "*", "5"]
+            this.tokens = new List<string>(tokens); ; // Example: ["2", "+", "3", "*", "5"]
         }
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace ConsoleCalculator
         {
             double result = 0;
             ProcessMulDiv();
-            result = ProcessAddSubstr();
+            result = ProcessAddSub();
             return result;
         }
 
@@ -44,17 +46,17 @@ namespace ConsoleCalculator
 
                 if (token == "*" || token == "/") {
                     if (index <= 0 || index >= tokens.Count - 1) // no operands for operation
-                        throw new InvalidExpressionException();
+                        throw new InvalidTokenException("No operands for operation");
 
-                    double left = Double.Parse(tokens[index - 1]);
-                    double right = Double.Parse(tokens[index + 1]);
+                    double left = ParseOperand(tokens[index - 1]);
+                    double right = ParseOperand(tokens[index + 1]);
 
                     if (token == "*")
                         result = left * right;
 
                     if (token == "/") {
                         if (right == 0.0)
-                            throw new DivideByZeroException();
+                            throw new DivideByZeroCalculatorException("Division by zero");
                         result = left / right;
                     }
 
@@ -70,13 +72,13 @@ namespace ConsoleCalculator
             }
         }
 
-        private double ProcessAddSubstr() //Handle + and -
+        private double ProcessAddSub() //Handle + and -
         {
-            double result = Double.Parse(tokens[0]);
+            double result = ParseOperand(tokens[0]);
             int index = 1;
             while(index < tokens.Count) {
                 string oper = tokens[index];
-                double right = Double.Parse(tokens[index + 1]);
+                double right = ParseOperand(tokens[index + 1]);
 
                 if (oper == "+")
                     result += right;
@@ -87,5 +89,13 @@ namespace ConsoleCalculator
 
             return result;
         }
+
+        private double ParseOperand(string token)
+        {
+            if (!double.TryParse(token, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+                throw new InvalidNumberException(token);
+            return value;
+        }
+
     }
 }
