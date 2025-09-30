@@ -23,15 +23,21 @@ namespace ConsoleCalculator
         {
             expression = expression.Replace(" ", String.Empty);
             expression = expression.Replace(",", ".");
+            expression = NormalizeSigns(expression);
+
             List<string> tokens = new List<string>();
 
             bool expectOperand = true;
             string token = "";
             for (int i = 0; i < expression.Length; i++) {
 
-
-                if (expression[i] == '-' && expectOperand) { //found '-' as sign
+                if (expression[i] == '-' && expectOperand ) { //found '-' as sign
                     token = "-";
+                    expectOperand = false;
+                    continue;
+                }
+                if (expression[i] == '+' && expectOperand) { //found '+' as sign
+                    token = "";
                     expectOperand = false;
                     continue;
                 }
@@ -40,7 +46,7 @@ namespace ConsoleCalculator
                     token += expression[i];
                     expectOperand = false;
                 }
-                else
+                else 
                 if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/') {
                     if (!string.IsNullOrEmpty(token))
                         tokens.Add(token);
@@ -48,13 +54,28 @@ namespace ConsoleCalculator
 
                     tokens.Add(expression[i].ToString());
                     expectOperand = true;
+
                 }
                 else
-                if (expression[i] == '(' || expression[i] == ')') {
-                    throw new InvalidTokenException("While not supported");
+                if (expression[i] == '(') {
+                    if (token == "-" || token == "+") {
+                        tokens.Add(token);
+                        token = "";
+                    }
+                    tokens.Add(expression[i].ToString());
+                    expectOperand = true;
+                }
+                else
+                if (expression[i] == ')') {
+                    if (!string.IsNullOrEmpty(token)) {
+                        tokens.Add(token);
+                        token = "";
+                    }
+                    tokens.Add(expression[i].ToString());
+                    expectOperand = false;
                 }
                 else {
-                    throw new InvalidTokenException($"Unexpected character: {expression[i]}");
+                    throw new InvalidTokenException($"Unexpected character #{i}: {expression[i]}");
                 }
 
             }
@@ -62,6 +83,21 @@ namespace ConsoleCalculator
             if(!string.IsNullOrEmpty(token))
                 tokens.Add(token);
             return tokens;
+        }
+
+        private static string NormalizeSigns(string expression)
+        {
+            bool isChanged;
+            do {
+                string oldExpression = new string(expression);
+                expression = expression.Replace("++", "+");
+                expression = expression.Replace("-+", "-");
+                expression = expression.Replace("+-", "-");
+                expression = expression.Replace("--", "+");
+
+                isChanged = (oldExpression != expression);
+            } while (isChanged);
+            return expression;
         }
     }
 }
