@@ -1,6 +1,6 @@
 ﻿# Calculator
 
-A simple console-based calculator written in **C# (.NET 8)**.  
+A Shunting Yard algorithm console-based calculator written in **C# (.NET 8)**.  
 Supports basic arithmetic operations such as addition, subtraction, multiplication, and division.
 
 ---
@@ -9,7 +9,9 @@ Supports basic arithmetic operations such as addition, subtraction, multiplicati
 - ➕ Addition  
 - ➖ Subtraction  
 - ✖️ Multiplication  
-- ➗ Division (with division by zero handling)  
+- ➗ Division (with division by zero handling)
+- () Parentheses
+- -/+ Unary signs
 - 📜 Clean and readable C# code  
 
 ---
@@ -19,6 +21,8 @@ Calculator/
 │── Program.cs # Entry point
 │── Calculator.cs # Core calculator logic
 │── ExpressionParser.cs # Parser for string input
+|── Exceptions/*.cs # Errors catching
+|── HistoryManager.cs # History of actions
 │── README.md
 
 ## ⚙️ Installation & Run
@@ -36,8 +40,6 @@ The program asks the user for input and performs the operation:
 Result: -2
 
 ## 🗺️ Roadmap
-- Support for negative numbers
-- Support for parentheses ( )
-- Implement Dijkstra's Shunting-yard algorithm for expression parsing
+- AST algorithm (Abstract Syntax Tree) instead of Shunting Yard
 - Add advanced math functions (power, square root, etc.)
 - GUI version with Blazor or WinForms
