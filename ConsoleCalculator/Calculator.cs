@@ -40,15 +40,17 @@ namespace ConsoleCalculator
         public double Evaluate()
         {
             double result = 0;
-            //ProcessMulDiv();
-            //result = ProcessAddSub();
             List<string> tokensRPN = ShuntingYard();
             result = EvaluateRPN(tokensRPN);
 
             return result;
         }
 
-
+        /// <summary>
+        /// Shunting Yard algorithm for RPN 
+        /// </summary>
+        /// <returns>tokens in RPN</returns>
+        /// <exception cref="InvalidTokenException"></exception>
         private List<string> ShuntingYard()
         {
             List<string> tokensRPN = new List<string>();
@@ -106,6 +108,12 @@ namespace ConsoleCalculator
             return tokensRPN;
         }
 
+        /// <summary>
+        /// Evaluates expression splitted in RPN tokens 
+        /// </summary>
+        /// <param name="tokensRPN"></param>
+        /// <returns>result number</returns>
+        /// <exception cref="InvalidTokenException"></exception>
         private double EvaluateRPN(List<string> tokensRPN)
         {
             Stack<double> stack = new Stack<double>();
@@ -132,6 +140,15 @@ namespace ConsoleCalculator
             return stack.Pop();
         }
 
+        /// <summary>
+        /// calculates result of operation
+        /// </summary>
+        /// <param name="left">left operand</param>
+        /// <param name="op">operation</param>
+        /// <param name="right">right operand</param>
+        /// <returns>result of operation</returns>
+        /// <exception cref="DivideByZeroCalculatorException"></exception>
+        /// <exception cref="InvalidTokenException"></exception>
         private double Calc(double left, string op, double right)
         {
             double result = 0;

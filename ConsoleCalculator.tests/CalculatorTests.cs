@@ -6,6 +6,7 @@ namespace ConsoleCalculator.Tests
 {
     public class CalculatorTests
     {
+        #region BasicOperationsTests
         public static IEnumerable<object[]> TestCasesSimple => new List<object[]>
         {
             new object[] { new List<string>{ "4", "-", "3" }, 1 },
@@ -26,8 +27,9 @@ namespace ConsoleCalculator.Tests
             // Assert
             Assert.Equal(expected, result);
         }
+        #endregion
 
-
+        #region PrioritiesTests
         public static IEnumerable<object[]> TestCasesPriorities => new List<object[]>
         {
             new object[] { new List<string>{ "2", "+", "3", "*", "4" }, 14 },
@@ -49,24 +51,16 @@ namespace ConsoleCalculator.Tests
             Assert.Equal(expected, result);
         }
 
-        [Fact]
-        public void Evaluate_DivisionByZero_ThrowsException()
-        {
-            // Arrange
-            var tokens = new List<string> { "10", "/", "0" };
-            var calculator = new Calculator(tokens);
+        #endregion
 
-            // Act + Assert
-            Assert.Throws<DivideByZeroCalculatorException>(() => calculator.Evaluate());
-        }
-
+        #region ExceptionTests
         [Fact]
         public void Evaluate_InvalidNumber_ThrowsException()
         {
             var tokens = new List<string> { "2a", "+", "3" };
             var calculator = new Calculator(tokens);
 
-            Assert.Throws<InvalidNumberException>(() => calculator.Evaluate());
+            Assert.Throws<InvalidTokenException>(() => calculator.Evaluate());
         }
 
         [Fact]
@@ -75,9 +69,29 @@ namespace ConsoleCalculator.Tests
             var tokens = new List<string> { "" };
             var calculator = new Calculator(tokens);
 
-            Assert.Throws<InvalidNumberException>(() => calculator.Evaluate());
+            Assert.Throws<InvalidTokenException>(() => calculator.Evaluate());
         }
 
+        public static IEnumerable<object[]> TestCasesExceptions => new List<object[]>
+        {
+            new object[] { new List<string>{ "5", "/", "0" }},
+            new object[] { new List<string>{ "2", "+", "("}},
+            new object[] { new List<string>{ "3", "+", ")"}},
+            new object[] { new List<string>{ "2", "+", "(", ")"}},
+            new object[] { new List<string>{ "2", "+", "@", "3" }},
+        };
+
+        [Theory]
+        [MemberData(nameof(TestCasesExceptions))]
+        public void Calculator_ThrowsException_OnInvalidExpressions(List<string> tokens)
+        {
+            var calc = new Calculator(tokens);
+            Assert.ThrowsAny<CalculatorException>(() => calc.Evaluate());
+        }
+
+        #endregion
+
+        #region OverflowTests
         [Fact]
         public void Evaluate_OverflowLarge_Returns()
         {
@@ -106,6 +120,8 @@ namespace ConsoleCalculator.Tests
             Assert.InRange(result, 4.999999e-309, 5.000001e-309);
         }
 
+        #endregion
+
         [Fact]
         public void Evaluate_NegativeNumber_ReturnsCorrectResult()
         {
@@ -133,5 +149,23 @@ namespace ConsoleCalculator.Tests
             // Assert
             Assert.Equal(-10, result);
         }
+
+        #region ShuntingYardTests
+        public static IEnumerable<object[]> TestCasesShuntingYard => new List<object[]>
+        {
+            new object[] { new List<string>{ "3", "+", "(", "(", "-2", ")", ")" }, 1 },
+            new object[] { new List<string>{ "-2", "*", "(", "-3", "+", "4" , ")", "+", "7"}, 5 },
+            new object[] { new List<string>{ "2", "*", "(", "-3", ")" }, -6 },
+        };
+        [Theory]
+        [MemberData(nameof(TestCasesShuntingYard))]
+        public void ShuntingYard_CorrectResults(List<string> tokens, double expected)
+        {
+            var calc = new Calculator(tokens);
+            double result = calc.Evaluate();
+            Assert.Equal(expected, result);
+        }
+
+        #endregion
     }
 }
